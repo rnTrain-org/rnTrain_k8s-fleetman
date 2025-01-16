@@ -1,0 +1,62 @@
+# mongodb deploy 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  ## unigue name for Deployment 
+  name: mongodb    ## dont need to have a complicate name with replica, when you get it will list as replica to keep names short 
+spec:                    ## This spec is for the replica
+#  minReadySeconds: 30
+  replicas: 1
+  selector:
+    matchLabels:                 #Make sure you add this for the Replicaset 
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb                 ## this is the label for the APP, it will be used by selector in Service 
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:3.6.5-jessie
+        volumeMounts:
+          - name: mongo-persistent-storage
+            mountPath: /data/db
+      volumes:
+        - name: mongo-persistent-storage
+          
+          ## Following is hostPAth, this will create a directory on local host - But doing it this was will create a hard link (Coupled) from this pod to local store
+          
+          #hostPath:
+          #  path: /mnt/dude/
+          #  type: DirectoryOrCreate
+
+          # Alternatively we can use a claimpointer to the configuration of HOW we want the mount to be implemented
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+
+
+---
+
+## mongobd
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: mongodb
+
+  ports:
+    # Accept traffic sent to port 80
+    # Node port (external)
+    - name: http
+      port: 27017
+      # targetPort: 80                  ## Use if using a Optional if same as port, this is the port on the pod
+      # nodePort: 30080               ## Using 80 here as we are now prod
+  type: ClusterIP                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+  #type: NodePort                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer

@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: webapp
+    #release: "0-5"
+
+  ports:
+    # Accept traffic sent to port 80
+    # Node port (external)
+    - name: http
+      port: 80
+      # targetPort: 80                  ## Use if using a Optional if same as port, this is the port on the pod
+      nodePort: 30080               ## Need to use 30xxx
+  #type: ClusterIP                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+  type: NodePort                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-queue
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: queue
+    # release: "1"
+
+  ports:
+    # Accept traffic sent to port 80
+    # Node port (external)
+    - name: admin
+      port: 8161
+      # targetPort: 80                  ## Use if using a Optional if same as port, this is the port on the pod
+      nodePort: 30010               ## Need to use 30xxx
+    - name: endpoint
+      port: 61616
+      # nodePort: 300015     ## this is not used or needed but just here as a example 
+  #type: ClusterIP                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+  type: NodePort                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-tracker
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: position-tracker
+    # release: "1"
+
+  ports:
+    # Accept traffic sent to port 80
+    # Node port (external)
+    - name: http
+      port: 8080
+      # targetPort: 80                  ## Use if using a Optional if same as port, this is the port on the pod
+      nodePort: 30020               ## Need to use 30xxx
+
+  #type: ClusterIP                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+  type: NodePort                    ## For test only  Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway
+
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: api-gateway
+
+  ports:
+    - name: http
+      port: 8080
+      nodePort: 30030
+
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: webapp
+    #release: "0-5"
+
+  ports:
+    # Accept traffic sent to port 80
+    # Node port (external)
+    - name: http
+      port: 80
+      # targetPort: 80                  ## Use if using a Optional if same as port, this is the port on the pod
+      nodePort: 30080               ## Using 80 here as we are now prod
+  #type: ClusterIP                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer
+  type: NodePort                     ## Defaults to ClusterIP. Type is clusterIP nodePort,  ExternalName, ClusterIP, NodePort, and LoadBalancer

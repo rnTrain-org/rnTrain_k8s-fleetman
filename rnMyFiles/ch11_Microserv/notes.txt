@@ -1,0 +1,50 @@
+* pods.yaml renamed to workloads.yaml for all pods, replica sets and such
+
+Requirements for new pod builds 
+
+- Queue
+    * Image - richardchesterwood/k8s-fleetman-queue:release1
+    * Port 
+        - Admin Port 
+            * 8161 (Admin) 
+            * Nodeport 30010 (Exposes admine 8161 to 30010)
+
+        Messeage send and receive 
+            - 61616
+
+- Possition Simulator 
+    * Image - richardchesterwood/k8s-fleetman-position-simulator:release1
+    * Port  
+        - No ports needed, Its isolated, it is just sending out 
+
+    * It does need an env var (sets the application profile)
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice
+
+- Possition Tracker 
+    * Image - richardchesterwood/k8s-fleetman-position-tracker:release1
+    * Port  
+        - No ports needed, Its isolated, it is just sending out 
+
+
+- Rest interface on tracker 
+    * Rest  
+        /vehicles/{vehicle name}
+
+        Eg
+        /vehicle/City Truck
+        /vehicle/City%Truck
+
+- API Gateway 
+    * Image - richardchesterwood/k8s-fleetman-api-gateway
+    * Port  
+        - 8080
+
+    test the port with / (nodePort: 30025    )
+
+
+    * It does need an env var (sets the application profile)
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice

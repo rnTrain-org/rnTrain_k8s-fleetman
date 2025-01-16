@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  ## unigue name for Deployment 
+  name: queue    ## dont need to have a complicate name with replica, when you get it will list as replica to keep names short 
+spec:                    ## This spec is for the replica
+#  minReadySeconds: 30
+  replicas: 1
+  selector:
+    matchLabels:                 #Make sure you add this for the Replicaset 
+      app: queue
+  template:
+    metadata:
+      labels:
+        app: queue                 ## this is the label for the APP, it will be used by selector in Service 
+    spec:
+      containers:
+      - name: queue
+        image: richardchesterwood/k8s-fleetman-queue:release1
+      #  resources:                      # Resource requests and limits for the container.
+      #    requests:
+      #      cpu: "100m"                 # CPU request for the container.
+      #      memory: "200Mi"             # Memory request for the container.
+      #    limits:
+      #      cpu: "200m"                 # CPU limit for the container.
+      #      memory: "400Mi"             # Memory limit for the container.
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  ## unigue name for Deployment 
+  name: position-simulator    ## dont need to have a complicate name with replica, when you get it will list as replica to keep names short 
+spec:                    ## This spec is for the replica
+#  minReadySeconds: 30
+  replicas: 1
+  selector:
+    matchLabels:                 #Make sure you add this for the Replicaset 
+      app: position-simulator
+  template:
+    metadata:
+      labels:
+        app: position-simulator                 ## this is the label for the APP, it will be used by selector in Service 
+    spec:
+      containers:
+      - name: position-simulator
+        image: richardchesterwood/k8s-fleetman-position-simulator:release1
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  ## unigue name for Deployment 
+  name: position-tracker    ## dont need to have a complicate name with replica, when you get it will list as replica to keep names short 
+spec:                    ## This spec is for the replica
+#  minReadySeconds: 30
+  replicas: 1
+  selector:
+    matchLabels:                 #Make sure you add this for the Replicaset 
+      app: position-tracker
+  template:
+    metadata:
+      labels:
+        app: position-tracker                 ## this is the label for the APP, it will be used by selector in Service 
+    spec:
+      containers:
+      - name: position-tracker
+        image: richardchesterwood/k8s-fleetman-position-tracker:release1
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice        
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: richardchesterwood/k8s-fleetman-api-gateway:release1
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  ## unigue name for Deployment 
+  name: webapp    ## dont need to have a complicate name with replica, when you get it will list as replica to keep names short 
+spec:                    ## This spec is for the replica
+  minReadySeconds: 30
+  selector:
+    matchLabels:                 #Make sure you add this for the Replicaset 
+      app: webapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webapp                 ## this is the label for the APP, it will be used by selector in Service 
+    spec:
+      containers:
+      - name: webapp
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release1
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: production-microservice

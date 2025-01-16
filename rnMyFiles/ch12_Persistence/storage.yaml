@@ -1,0 +1,28 @@
+# This section configures What do want for startage, configured on pod?
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  ## The following makes a request of 20Gi with accessMode of ReasWriteONce and a storage class of mylocalstorage
+  storageClassName: mylocalstorage                                #BINDING This is a label name for a storager class, this is how we BIND this PVC to the below PV
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+# This section configures How do we want it implemented
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-storage
+spec:
+  storageClassName: mylocalstorage                                #This is a label name for a storager class, this is how we link this PVC to the below PV
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/some new/directory/structure/"
+    type: DirectoryOrCreate

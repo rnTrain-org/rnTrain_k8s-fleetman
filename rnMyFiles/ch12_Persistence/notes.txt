@@ -1,0 +1,14 @@
+In this chapter 
+
+- We update all tags to release2
+    * Changed all release1 to release2 in workloads.yaml
+    * New feature in webapp 
+        - Vehicle tracking shows the hisgtory of each wehicle
+
+
+- The Position tracker needs json document DB for possition history 
+    * To do this an updagrade possition track has been created that supports Mongo DB
+        - Release3 of the possition tracker that includes update for external storage 
+        - Update k8s-fleetman-position-tracker:release3 (From release2)
+
+    * Create a new Mongodb pod what must be named fleetman-Mongodb  

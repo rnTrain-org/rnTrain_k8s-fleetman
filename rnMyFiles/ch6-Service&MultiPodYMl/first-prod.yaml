@@ -1,0 +1,26 @@
+ ## This YML creates multiple pods, each separated by document separater ---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+  labels:
+    app: webapp                 ## this is the label for the APP, it will be used by selector in Service 
+    release: "0"                ## this is the label for the APP version 
+spec:
+  containers:
+  - name: webapp
+    image: richardchesterwood/k8s-fleetman-webapp-angular:release0
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-release-0-5
+  labels:                       ## With multiple labels, if used by serivice, must use all 
+    app: webapp                 ## this is the label for the APP, it will be used by selector in Service
+    release: "0-5"              ## this is the label for the APP version 0-5 
+spec:
+  containers:
+  - name: webapp
+    image: richardchesterwood/k8s-fleetman-webapp-angular:release0-5
